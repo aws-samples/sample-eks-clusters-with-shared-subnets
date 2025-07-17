@@ -1,0 +1,14 @@
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  name: blue-green-tgb
+  namespace: blue-green
+spec:
+  serviceRef:
+    name: blue-green-service
+    port: 3000
+  assumeRoleExternalId: very-secret-string
+  iamRoleArnToAssume: ${assume_role_arn}
+  vpcID: ${vpc_id}
+  targetGroupARN: ${target_group_arn}
+  targetType: ip

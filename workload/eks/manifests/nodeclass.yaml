@@ -1,0 +1,24 @@
+apiVersion: eks.amazonaws.com/v1
+kind: NodeClass
+metadata:
+  name: custom
+spec:
+  role: ${node_role}
+  subnetSelectorTerms:
+    - tags:
+        kubernetes.io/cluster/${cluster_name}: "shared"
+        kubernetes.io/role/node: "1"
+  securityGroupSelectorTerms:
+    - tags:
+        Name: "${cluster_name}-node"
+  podSubnetSelectorTerms:
+    - tags:
+        kubernetes.io/cluster/${cluster_name}: "shared"
+        kubernetes.io/role/pod: "1"
+  podSecurityGroupSelectorTerms:
+    - tags:
+        Name: "${cluster_name}-node"
+  ephemeralStorage:
+    iops: 3000
+    size: 80Gi
+    throughput: 125

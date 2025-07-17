@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blue-green-app
+  namespace: blue-green
+  labels:
+    app: blue-green-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: blue-green-app
+  template:
+    metadata:
+      labels:
+        app: blue-green-app
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      automountServiceAccountToken: false
+      containers:
+        - name: blue-green-app
+          image: public.ecr.aws/v2f5y6u4/eba@sha256:8a064ca73de1e2fc9fa238ba92c751e23d9c9eac6e8694e5cb199b9b28d7423b
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
+            seccompProfile:
+              type: RuntimeDefault
+          ports:
+            - containerPort: 3000
+          env:
+            - name: APP_COLOR
+              value: ${app_color}
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
